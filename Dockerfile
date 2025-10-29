@@ -12,11 +12,11 @@ RUN apt-get update && apt-get install -y \
 # 复制项目文件到容器中
 COPY . /app/
 
-# 安装CPU版本的深度学习框架
-RUN pip install paddlepaddle==3.0.0 -i https://www.paddlepaddle.org.cn/packages/stable/cpu/
-RUN pip install torch torchvision --index-url https://download.pytorch.org/whl/cpu
+# 安装GPU版本的深度学习框架
+RUN pip install paddlepaddle-gpu==3.0.0 -i https://www.paddlepaddle.org.cn/packages/stable/cu118/
+RUN pip install torch==2.7.0 torchvision==0.22.0 --index-url https://download.pytorch.org/whl/cu118
 
 # 安装项目依赖
 RUN pip install -r requirements.txt
 
-CMD ["/bin/bash", "-c", "sleep", "10000"]
+CMD ["/bin/bash", "-c", "sleep 10000"]
