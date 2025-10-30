@@ -13,7 +13,10 @@ jobs:
     steps:
       - name: 准备代码
         uses: actions/checkout@v4
-        
+      
+      - name: 检查磁盘空间大小
+        run: df -h
+
       - name: 准备打包Docker镜像的环境
         uses: docker/setup-buildx-action@v3
 
