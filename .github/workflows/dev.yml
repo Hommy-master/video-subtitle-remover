@@ -20,6 +20,9 @@ jobs:
       - name: 准备打包Docker镜像的环境
         uses: docker/setup-buildx-action@v3
 
+      - name: 查看Docker 镜像
+        run: docker images
+
       # 登录到Docker Hub
       - name: 登录Docker Hub
         if: github.event_name != 'pull_request'  # PR时不登录
