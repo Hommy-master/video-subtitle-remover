@@ -1,28 +1,25 @@
-# 使用官方Python 3.12镜像
-FROM python:3.12-slim
+# 使用 NVIDIA 官方 CUDA 镜像
+FROM nvidia/cuda:11.8-cudnn9-devel-ubuntu20.04
 
-# 设置工作目录
-WORKDIR /app
+# 或者使用 PyTorch 官方镜像
+# FROM pytorch/pytorch:2.7.0-cuda11.8-cudnn9-devel
 
-# 安装系统依赖
+# 安装 Python
 RUN apt-get update && apt-get install -y \
-    && rm -rf /var/lib/apt/lists/*
+    python3.12 \
+    python3-pip \
+    ffmpeg \
+    && rm -rf /var/lib/apt/lists/* \
+    && ln -sf /usr/bin/python3.12 /usr/bin/python
+
+WORKDIR /app
 
 # 复制项目文件
 COPY . /app/
 
-# 合并所有pip安装步骤，并在每一步后清理缓存
+# 安装 Python 依赖
 RUN pip install --no-cache-dir torch==2.7.0 torchvision==0.22.0 --index-url https://download.pytorch.org/whl/cu118 && \
     pip install --no-cache-dir paddlepaddle-gpu==3.0.0 -i https://www.paddlepaddle.org.cn/packages/stable/cu118/ && \
-    pip install --no-cache-dir -r requirements.txt && \
-    # 清理所有可能的缓存
-    pip cache purge && \
-    rm -rf /root/.cache/pip && \
-    rm -rf /tmp/* && \
-    # 清理文档和不需要的文件
-    find /usr/local -name '*.pyc' -delete && \
-    find /usr/local -name '__pycache__' -type d -exec rm -rf {} + && \
-    # 清理apt缓存（再次确认）
-    rm -rf /var/lib/apt/lists/* /var/cache/apt/*
+    pip install --no-cache-dir -r requirements.txt
 
 CMD ["/bin/bash", "-c", "sleep 10000"]
